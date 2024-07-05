@@ -1,0 +1,96 @@
+<main class="container-fluid">
+    <section class="row">
+       <h2>{{first_name}} {{last_name}} {{email}} {{rol}} {{user}}</h2>
+        <h2 class="col-12">
+            Comprar Productos
+        </h2>
+    </section>
+
+    <section class="row">
+        <form action="/api/carts/todo2" method="POST" class="col-8">
+            <table class="table table-sm table-striped">
+                <thead>
+                    <tr>
+                        <th>Id.</th>
+                        <th>Cantidad</th>
+                    </tr>
+                </thead>
+                <tbody>
+            
+                    {{#each selectedProducts}}
+                    <tr>
+                        <td><input type="hidden" name="products[{{@index}}][id]" value="{{this}}">{{this}}</td>
+                        <td><input type="number" name="products[{{@index}}][quantity]" class="form-control" min="0" required></td>
+                    </tr>
+                    {{/each}}
+                   
+                </tbody>
+            </table>
+            <button type="submit" class="btn btn-primary">Agregar al carrito</button>
+        </form>
+    </section>
+
+    <section class="row">
+        <article class="col-4">
+            <p>{{message}}</p>
+            <p>Id. de su carrito: {{cart}}</p>
+        </article>
+    </section class="mb-2">
+
+    <section class="row">
+        <article class="col-8">
+            <label for="cartId">Por seguridad usted debe copiar y pegar aquí el ID de su carrito para finalizar el proceso de compra:</label>
+            <input type="text" id="cartId" class="form-control" required>
+        </article>
+        <article class="col-4">
+              <button class="btn btn-success" onclick="finalizePurchase()">Finalizar Compra</button>
+        </article>
+    </section>
+
+    <section class="row mt-2">
+        <article class="col-12">
+            <p id="totalAmount"></p>
+            <p id="unavailableProducts"></p>
+        </article>
+    </section>
+
+    <section class="row">
+         <form class="col-6 mt-1 text-center" action="/api/views/products" method="get">
+            <input type="hidden" name="first_name" value="{{first_name}}">
+            <input type="hidden" name="last_name" value="{{last_name}}">
+            <input type="hidden" name="email" value="{{email}}">
+            <input type="hidden" name="rol" value="{{rol}}">
+            <input type="hidden" name="user" value="{{user}}">
+            <button type="submit" class="btn login">Atrás</button>
+        </form>
+    </section>
+
+
+</main>
+
+<script>
+    async function finalizePurchase() {
+        const cartId = document.getElementById('cartId').value;
+        if (!cartId) {
+            alert('¡Por favor ingrese el ID del carrito que le fue proporcionado para finalizar el proceso de compra!');
+            return;
+        }
+
+        const response = await fetch(`/api/carts/${cartId}/purchase`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+
+        const result = await response.json();
+
+        if (response.status === 200) {
+            document.getElementById('totalAmount').innerText = `Ticket: ${result.message}`;
+         /*   document.getElementById('unavailableProducts').innerText = `Productos no disponibles: ${result.noDisponibles.join(', ')}`;*/
+        } else {
+            alert(result.message);
+        }
+    }
+</script>
+

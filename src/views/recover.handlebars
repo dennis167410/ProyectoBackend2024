@@ -1,0 +1,55 @@
+<main class="container-fluid">
+
+<section class="row">
+<h1 class="col-12 text-center text-uppercase">
+    Recuperación de contraseña
+</h1>
+</section>
+
+<section class="container">
+    <section class="row justify-content-start align-items-center">
+        <article class="col-5 col-md-5 mt-4 text-left">
+           <form action="/api/session/recover-psw" method="post">
+            <label for="email">Correo</label><br />
+            <input type="email" name="email" id="email" placeholder="ingrese su correo" required/>
+            <br />
+            <label for="new_password">Nueva contraseña</label><br />
+            <input type="password" name="new_password" id="new_password" placeholder="ingrese su nueva contraseña"/>
+            <br/>
+            <label for="token">Código de seguridad</label><br />
+            <input type="text" name="token" id="token" placeholder="ingrese el código de seguridad enviado por mail"/>
+            <br />
+            <button type="submit" class="login mt-2">Actualizar</button>
+        </form>
+
+        </article>
+    </section>
+
+    <section class="row mt-1">
+        <article class="mt-4 col-5 col-md-5 text-left">
+            <form action="/mail/send" method="post">
+            <label for="email">Correo electrónico:</label>
+                <input type="email" id="email" name="email" required>
+            <button type="submit">Reenviar enlace de restablecimiento</button>
+        </form>
+        </article>
+    </section>
+
+</section>
+
+<section class="row">
+    <article class="col">
+     {{#if message}}
+        <p>{{message}}</p>
+    {{/if}}
+    </article>
+</section>
+
+    <section class="row">
+        <form class="col-12 mt-1 text-center" action="/api/views/login" method="get">
+                <button type="submit" class="btn login">Login</button>   
+        </form>
+    </section>
+
+</main>
+

@@ -1,0 +1,85 @@
+<main class="container-fluid">
+
+    <section class="row">
+        <h2 class="col-12">
+            Hola, {{this.first_name}} {{this.last_name}} {{this.email}} {{this.rol}}
+        </h2>
+    </section>
+
+    <section class="row">
+        <form class="d-flex justify-content-end align-items-end" action="/api/session/logout" method="get">
+            <button type="submit" class="btn btn-sm logout">logout</button>
+        </form>
+    </section>
+
+     <section class="row justify-content-center align-items-center">
+        <article class="col-md-5 mt-4 text-center">
+            <form action="/api/users" method="get">
+               <!-- <input type="text" name="id" id="id" placeholder="id" required /> -->
+               <button type="submit" class="btn col-8 mt-1 login">Actualizar lista</button>   
+            </form>
+        </article>
+    </section>
+
+    <section class="row">
+        <h2 class="col-12">
+            Usuarios registrados 
+        </h2>
+        </h2>
+
+        <table class="table table-sm table-striped">
+            <thead>
+                <tr>
+                    <th>Nombre</th>
+                    <th>Apellido</th>
+                    <th>Email</th>
+                    <th>Rol</th>
+                    <th>Última conexión</th>
+                    <th></th>
+                </tr>
+            </thead>
+
+            <tbody>
+                {{#each users}}
+                    <tr> 
+                        <td>{{this.first_name}}</td>
+                        <td>{{this.last_name}}</td>
+                        <td>{{this.email}}</td>
+                        <td>{{this.role}}</td>
+                        <td>{{this.last_connection}}</td>
+                        <td> 
+                            <form action="/api/users/premiumm/{{this.email}}" method="POST">
+                                    <select name="role">
+                                        <option value="USER" {{#if this.isUser}}selected{{/if}}>Usuario</option>
+                                        <option value="PREMIUM" {{#if this.isAdmin}}selected{{/if}}>Premium</option>
+                                    </select>
+                                <button type="submit">Actualizar</button>
+                            </form>
+                            <br/>
+                             <form onsubmit="deleteUser(event, '{{this.email}}')">
+                                <button type="submit">Eliminar</button>
+                            </form>
+                            </td>
+                    </tr>
+                    {{/each}}   
+                       
+            </tbody>
+        </table>
+    </section>
+
+</main>
+
+<script>
+    function deleteUser(event, userEmail) {
+        event.preventDefault();
+        fetch(`/api/users/elimina/${userEmail}`, {
+            method: 'DELETE'
+        }).then(response => {
+            if (response.ok) {
+                window.location.reload();
+            } else {
+                alert('Error al eliminar el usuario');
+            }
+        });
+    }
+</script>
